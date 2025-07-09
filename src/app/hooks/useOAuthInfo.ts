@@ -25,7 +25,7 @@ export function useOAuthInfo(platformName: PlatformName) {
       setOAuthState((prev) => ({ ...prev, userData: null, error: null }));
 
       // 构建 OAuth URL
-      const oauthUrl = `/api/connect/${platformName}`;
+      const { authorizeUrl } = await (await fetch(`/api/connect/${platformName}`)).json();
 
       // 打开 OAuth 窗口
       const width = 600;
@@ -33,21 +33,25 @@ export function useOAuthInfo(platformName: PlatformName) {
       const left = window.screenX + (window.outerWidth - width) / 2;
       const top = window.screenY + (window.outerHeight - height) / 2;
       const authWindow = window.open(
-        oauthUrl,
+        authorizeUrl,
         `${platformName}Auth`,
         `width=${width},height=${height},left=${left},top=${top}`,
       );
 
       // 监听消息
       const handleMessage = async (event: MessageEvent) => {
+        console.log(event);
         if (event.origin !== window.location.origin) return;
+        const eventData = event.data;
 
-        if (event.data.type === 'auth_success') {
+        console.log('event data', eventData);
+
+        if (eventData.type === 'auth_success') {
           // 获取用户数据
-          const response = await fetch('/api/user/profile', {
+          const response = await fetch(`/api/connect/${platformName}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ platform: platformName, code: event.data.code }),
+            body: JSON.stringify({ code: eventData.payload?.code }),
           });
           const userData = await response.json();
           setOAuthState({
@@ -55,10 +59,10 @@ export function useOAuthInfo(platformName: PlatformName) {
             error: null,
             userData,
           });
-        } else if (event.data.type === 'auth_error') {
+        } else if (eventData.type === 'auth_error') {
           setOAuthState({
             isLoading: false,
-            error: event.data.error,
+            error: eventData.error,
             userData: null,
           });
         }

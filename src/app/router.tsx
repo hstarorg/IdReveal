@@ -1,9 +1,10 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, RouteObject } from 'react-router-dom';
 import { MainLayout } from './layouts/MainLayout';
 
 import Home from './pages/Home';
+import { OAuthCallback } from './pages/OAuthCallback';
 
-const routes = [
+const routes: RouteObject[] = [
   {
     element: <MainLayout />,
     children: [
@@ -13,6 +14,7 @@ const routes = [
       },
     ],
   },
+  { path: '/oauth-callback/:id', element: <OAuthCallback /> }, // Placeholder for OAuth callback
 ];
 
 export const router = createBrowserRouter(routes);
