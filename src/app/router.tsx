@@ -1,10 +1,11 @@
-import { createBrowserRouter, Outlet } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
+import { MainLayout } from './layouts/MainLayout';
 
 import Home from './pages/Home';
 
 const routes = [
   {
-    element: <Outlet />,
+    element: <MainLayout />,
     children: [
       {
         path: '/',
