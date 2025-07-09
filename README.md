@@ -2,7 +2,6 @@
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/vite-react-template)
 
-
 <!-- dash-content-start -->
 
 🚀 Supercharge your web development with this powerful stack:
@@ -48,6 +47,13 @@ Start the development server with:
 
 ```bash
 pnpm dev
+```
+
+Local envs
+
+```bash
+# file.dev.vars
+Google_OAuth=xxx
 ```
 
 Your application will be available at [http://localhost:5173](http://localhost:5173).
