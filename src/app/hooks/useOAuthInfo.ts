@@ -32,11 +32,7 @@ export function useOAuthInfo(platformName: PlatformName) {
       const height = 600;
       const left = window.screenX + (window.outerWidth - width) / 2;
       const top = window.screenY + (window.outerHeight - height) / 2;
-      const authWindow = window.open(
-        authorizeUrl,
-        `${platformName}Auth`,
-        `width=${width},height=${height},left=${left},top=${top}`,
-      );
+      window.open(authorizeUrl, `${platformName}Auth`, `width=${width},height=${height},left=${left},top=${top}`);
 
       // 监听消息
       const handleMessage = async (event: MessageEvent) => {
