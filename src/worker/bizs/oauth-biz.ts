@@ -1,22 +1,29 @@
 import { HTTPException } from 'hono/http-exception';
-import { GoogleProvider } from './oauth-providers/google-provider';
+import { Platform, PlatformValues } from '../constants';
 
-export function getOAuthRedirectUrl(env: Env, platform: string) {
+import { GoogleProvider } from './oauth-providers/google/provider';
+import { XProvider } from './oauth-providers/x/provider';
+
+export function getOAuthRedirectUrl(env: Env, platform: PlatformValues) {
   const provider = getOAuthProvider(platform, env);
   return provider.getAuthorizeUrl();
 }
 
-export async function getUserInfo(env: Env, platform: string, code: string) {
+export async function getUserInfo(env: Env, platform: PlatformValues, code: string) {
   const provider = getOAuthProvider(platform, env);
   const accessTokenRes = await provider.getAccessToken(code);
+  console.log('Access token response:', accessTokenRes);
   const userInfo = await provider.getUserInfo(accessTokenRes.accessToken);
   return userInfo;
 }
 
-function getOAuthProvider(platform: string, env: Env) {
-  if (platform === 'google') {
+function getOAuthProvider(platform: PlatformValues, env: Env) {
+  if (platform === Platform.Google) {
     const [clientId, clientSecret, redirectUri] = env.Google_OAuth?.split('|') || [];
     return new GoogleProvider({ clientId, clientSecret, redirectUri });
+  } else if (platform === Platform.X) {
+    const [clientId, clientSecret, redirectUri] = env.X_OAuth.split('|') || [];
+    return new XProvider({ clientId, clientSecret, redirectUri, state: Date.now().toString() });
   }
   throw new HTTPException(400, { message: 'Unsupported platform' });
 }
