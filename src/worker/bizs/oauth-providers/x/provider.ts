@@ -89,8 +89,7 @@ export class XProvider implements IOAuthProvider {
 
     const response = (await fetch(`https://api.x.com/2/users/me?${parsedOptions}`, {
       headers: {
-        // authorization: `Bearer ${accessToken}`,
-        authorization: accessToken,
+        authorization: `Bearer ${accessToken}`,
       },
     }).then((res) => res.json())) as XMeResponse | XErrorResponse;
 
