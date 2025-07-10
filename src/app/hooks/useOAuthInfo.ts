@@ -40,11 +40,8 @@ export function useOAuthInfo(platformName: PlatformName) {
 
       // 监听消息
       const handleMessage = async (event: MessageEvent) => {
-        console.log(event);
         if (event.origin !== window.location.origin) return;
         const eventData = event.data;
-
-        console.log('event data', eventData);
 
         if (eventData.type === 'auth_success') {
           // 获取用户数据
@@ -68,7 +65,6 @@ export function useOAuthInfo(platformName: PlatformName) {
         }
 
         window.removeEventListener('message', handleMessage);
-        authWindow?.close();
       };
 
       window.addEventListener('message', handleMessage);
