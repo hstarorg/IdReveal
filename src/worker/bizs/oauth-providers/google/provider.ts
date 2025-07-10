@@ -53,8 +53,6 @@ export class GoogleProvider implements IOAuthProvider {
     }
     const result = response as GoogleTokenResponse;
 
-    console.log('Google access token response:', result);
-
     return {
       accessToken: result.access_token,
       expiresIn: result.expires_in,
@@ -65,7 +63,6 @@ export class GoogleProvider implements IOAuthProvider {
   }
 
   async getUserInfo(accessToken: string): Promise<GetUserInfoOutput> {
-    console.log('accessToken', accessToken);
     const response = (await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
       headers: {
         authorization: `Bearer ${accessToken}`,

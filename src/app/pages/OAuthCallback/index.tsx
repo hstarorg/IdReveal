@@ -12,7 +12,6 @@ export function OAuthCallback() {
       window.opener?.postMessage({ type: 'auth_success', payload: { code } }, '*');
       window.close();
     }
-    console.log('OAuth callback with id:', params.id);
   });
 
   return <div>xxx - {params.id}</div>;

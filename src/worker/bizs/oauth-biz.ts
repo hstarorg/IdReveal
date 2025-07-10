@@ -12,7 +12,6 @@ export function getOAuthRedirectUrl(env: Env, platform: PlatformValues) {
 export async function getUserInfo(env: Env, platform: PlatformValues, code: string) {
   const provider = getOAuthProvider(platform, env);
   const accessTokenRes = await provider.getAccessToken(code);
-  console.log('Access token response:', accessTokenRes);
   const userInfo = await provider.getUserInfo(accessTokenRes.accessToken);
   return userInfo;
 }

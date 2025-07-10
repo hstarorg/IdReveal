@@ -96,7 +96,7 @@ export class XProvider implements IOAuthProvider {
     if ('error_description' in response) {
       throw new HTTPException(400, { message: response.error_description });
     }
-    console.log('X user info response:', response);
+
     const result = response as XMeResponse;
     return {
       id: result.data.id,
