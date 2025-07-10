@@ -29,7 +29,7 @@ export function PlatformInfoCard(props: PlatformInfoCardProps) {
         {userData && (
           <div className="mt-4">
             <h3 className="text-lg font-semibold">User Data</h3>
-            <pre className="bg-gray-100 p-2 rounded whitespace-pre-wrap">{JSON.stringify(userData, null, 2)}</pre>
+            <pre className="bg-gray-100 p-2 rounded whitespace-pre-wrap break-all">{JSON.stringify(userData, null, 2)}</pre>
           </div>
         )}
         {error && <div className="text-red-500 mt-2">{error}</div>}
