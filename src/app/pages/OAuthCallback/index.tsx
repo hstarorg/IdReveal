@@ -9,7 +9,8 @@ export function OAuthCallback() {
     const query = new URLSearchParams(loc.search);
     const code = query.get('code');
     if (code) {
-      window.opener?.postMessage({ type: 'auth_success', payload: { code } }, '*');
+      const channel = new BroadcastChannel('id-reveal:oauth-callback');
+      channel.postMessage({ type: 'auth_success', payload: { code, platform: params.id } });
       window.close();
     }
   });

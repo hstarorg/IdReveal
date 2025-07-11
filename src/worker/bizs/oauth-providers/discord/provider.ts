@@ -47,7 +47,6 @@ export class DiscordProvider implements IOAuthProvider {
     this._checkResponse(response);
 
     const result = response as DiscordTokenResponse;
-    console.log(result);
     return {
       accessToken: result.access_token,
       expiresIn: result.expires_in,
@@ -66,8 +65,6 @@ export class DiscordProvider implements IOAuthProvider {
     this._checkResponse(response);
 
     const result = response as DiscordMeResponse;
-
-    console.log(result);
 
     return {
       id: result.user.id,

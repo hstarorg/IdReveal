@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export type PlatformName = 'google' | 'twitter' | 'telegram' | 'discord';
 
@@ -21,6 +21,10 @@ export function useOAuthInfo(platformName: PlatformName) {
     userData: null,
   });
 
+  const channel = useMemo(() => {
+    return new BroadcastChannel('id-reveal:oauth-callback');
+  }, []);
+
   const connect = async () => {
     try {
       setOAuthState((prev) => ({ ...prev, userData: null, error: null }));
@@ -38,8 +42,31 @@ export function useOAuthInfo(platformName: PlatformName) {
       const top = window.screenY + (window.outerHeight - height) / 2;
       window.open(authorizeUrl, `${platformName}Auth`, `width=${width},height=${height},left=${left},top=${top}`);
 
+      const handleMessageChannelMessage = async (event: MessageEvent) => {
+        const { type, payload } = event.data || {};
+        if (payload.platform !== platformName) {
+          console.warn(`Received message for platform ${payload.platform}, expected ${platformName}, ignoring.`);
+          return;
+        }
+        if (type === 'auth_success') {
+          // 获取用户数据
+          const response = await fetch(`/api/connect/${platformName}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: payload?.code }),
+          });
+          const userData = await response.json();
+          setOAuthState({
+            isLoading: false,
+            error: null,
+            userData,
+          });
+        }
+        channel.close();
+      };
+
       // 监听消息
-      const handleMessage = async (event: MessageEvent) => {
+      const handlePostMessage = async (event: MessageEvent) => {
         const eventData = event.data;
         if (event.origin === 'https://tg-brother.vercel.app' && eventData.type === 'tg-brother:telegram_login') {
           setOAuthState({
@@ -53,33 +80,16 @@ export function useOAuthInfo(platformName: PlatformName) {
           });
           return;
         }
-
-        if (event.origin !== window.location.origin) return;
-
-        if (eventData.type === 'auth_success') {
-          // 获取用户数据
-          const response = await fetch(`/api/connect/${platformName}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ code: eventData.payload?.code }),
-          });
-          const userData = await response.json();
-          setOAuthState({
-            isLoading: false,
-            error: null,
-            userData,
-          });
-        } else if (eventData.type === 'auth_error') {
-          setOAuthState({
-            isLoading: false,
-            error: eventData.error,
-            userData: null,
-          });
-        }
-        window.removeEventListener('message', handleMessage);
+        window.removeEventListener('message', handlePostMessage);
       };
 
-      window.addEventListener('message', handleMessage);
+      if (platformName === 'telegram') {
+        // 特殊处理 Telegram 的登录
+        window.addEventListener('message', handlePostMessage);
+      } else {
+        // 其他平台使用 BroadcastChannel
+        channel.onmessage = handleMessageChannelMessage;
+      }
     } catch (error) {
       setOAuthState({
         isLoading: false,
