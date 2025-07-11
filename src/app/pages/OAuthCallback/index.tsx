@@ -14,5 +14,5 @@ export function OAuthCallback() {
     }
   });
 
-  return <div>xxx - {params.id}</div>;
+  return <div>OAuth Callback - {params.id}</div>;
 }
