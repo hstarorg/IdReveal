@@ -6,7 +6,7 @@ import { Platform, PlatformValues } from './constants';
 const app = new Hono<{ Bindings: Env }>();
 
 function requireValidPlatform(platform: PlatformValues) {
-  if (![Platform.Google, Platform.X].includes(platform)) {
+  if (!([Platform.Google, Platform.X, Platform.Discord] as PlatformValues[]).includes(platform)) {
     throw new HTTPException(400, { message: 'Invalid platform name' });
   }
 }

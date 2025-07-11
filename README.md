@@ -52,8 +52,11 @@ pnpm dev
 Local envs
 
 ```bash
-# file.dev.vars
+# Set local dev vars, filepath .dev.vars
 Google_OAuth=xxx
+
+# Generate types
+pnpm cf-typegen
 ```
 
 Your application will be available at [http://localhost:5173](http://localhost:5173).
@@ -77,6 +80,10 @@ Deploy your project to Cloudflare Workers:
 ```bash
 pnpm build && pnpm run deploy
 ```
+
+## Resources
+
+1. OAuth Providers: https://github.dev/honojs/middleware/blob/main/packages/oauth-providers/src/providers
 
 ## Additional Resources
 

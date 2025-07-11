@@ -1,6 +1,7 @@
 export const Platform = {
   Google: 'google',
   X: 'x',
+  Discord: 'discord',
 } as const;
 export type PlatformValues = ValuesOf<typeof Platform>;
 
