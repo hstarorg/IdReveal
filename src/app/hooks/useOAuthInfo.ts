@@ -4,7 +4,8 @@ export type PlatformName = 'google' | 'twitter' | 'telegram' | 'discord';
 
 type PlatformUserInfo = {
   id: string;
-  name: string;
+  username: string;
+  originalData: Record<string, any>;
 };
 
 type OAuthState = {
@@ -25,7 +26,10 @@ export function useOAuthInfo(platformName: PlatformName) {
       setOAuthState((prev) => ({ ...prev, userData: null, error: null }));
 
       // 构建 OAuth URL
-      const { authorizeUrl } = await (await fetch(`/api/connect/${platformName}`)).json();
+      const { authorizeUrl } =
+        platformName === 'telegram'
+          ? { authorizeUrl: 'https://tg-brother.vercel.app/?bot_name=TgBrother_bot&close=1' }
+          : await (await fetch(`/api/connect/${platformName}`)).json();
 
       // 打开 OAuth 窗口
       const width = 600;
@@ -36,8 +40,21 @@ export function useOAuthInfo(platformName: PlatformName) {
 
       // 监听消息
       const handleMessage = async (event: MessageEvent) => {
-        if (event.origin !== window.location.origin) return;
         const eventData = event.data;
+        if (event.origin === 'https://tg-brother.vercel.app' && eventData.type === 'tg-brother:telegram_login') {
+          setOAuthState({
+            isLoading: false,
+            error: null,
+            userData: {
+              id: eventData.payload?.id,
+              username: eventData.payload?.username,
+              originalData: eventData.payload,
+            },
+          });
+          return;
+        }
+
+        if (event.origin !== window.location.origin) return;
 
         if (eventData.type === 'auth_success') {
           // 获取用户数据
@@ -59,7 +76,6 @@ export function useOAuthInfo(platformName: PlatformName) {
             userData: null,
           });
         }
-
         window.removeEventListener('message', handleMessage);
       };
 
