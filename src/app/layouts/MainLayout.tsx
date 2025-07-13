@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
 import { faBug } from '@fortawesome/free-solid-svg-icons';
+import { NavbarIconItem } from './components/NavbarIconItem';
 
 export function MainLayout() {
   return (
@@ -12,26 +13,16 @@ export function MainLayout() {
           <h1 className="text-xl font-bold text-gray-900">ID Reveal</h1>
         </div>
         <div className="flex justify-center items-center">
-          <div className="h-11 w-11 flex items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 transition-colors">
-            <a
-              href="https://github.com/hstarorg/IdReveal/issues"
-              title="Submit a bug"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          <NavbarIconItem tooltip={<span>Submit a bug</span>}>
+            <a href="https://github.com/hstarorg/IdReveal/issues" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faBug} />
             </a>
-          </div>
-          <div className="h-11 w-11 flex items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 transition-colors">
-            <a
-              href="https://github.com/hstarorg/IdReveal"
-              title="Source on Github"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          </NavbarIconItem>
+          <NavbarIconItem tooltip="Source on Github">
+            <a href="https://github.com/hstarorg/IdReveal" target="_blank" rel="noopener noreferrer">
               <FontAwesomeIcon icon={faGithub} />
             </a>
-          </div>
+          </NavbarIconItem>
         </div>
       </header>
       <main>
